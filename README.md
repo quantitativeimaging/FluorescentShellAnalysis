@@ -1,2 +1,2 @@
 # Fluorescent shell analysis
-MATLAB code for analysis wide-field fluorescent microscopy images for model fitting.
+MATLAB code for analysis of wide-field fluorescent microscopy images for model fitting.
