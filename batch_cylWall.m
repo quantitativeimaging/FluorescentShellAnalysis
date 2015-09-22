@@ -14,6 +14,7 @@
 % 3. In this script, set a suitable number of regions to process
 % 4. Run this script
 % 5. When Figure 1 appears, use the cursor to select regions of interest
+%     Regions of interest should have 4 corners (any more will be ignored)
 %     Choose straight, cylindrical segments of specimens
 %     Select the feature and some surrounding dark space
 %     Try to select a region with greater length along the specimen than
@@ -25,9 +26,9 @@
 
 
 % 1. INPUT
-suppliedFileIn = ['testData_Bsubtilis168_HADA_cylinders']; % 
+suppliedFileIn = ['testData_Bsubtilis168_HADA_cylinders.tif']; % 
 
-numberRegions = 1; 
+numberRegions = 4; 
 
 
 % 2. ESTABLISH WHICH REGIONS TO PROCESS
@@ -47,10 +48,13 @@ listYCen   = zeros(numberRegions, 1);
 listVar   = zeros(numberRegions, 1);
 listMax   = zeros(numberRegions, 1);
 listPsi   = zeros(numberRegions, 1);
+listDiags = zeros(numberRegions, 1); % Long diagonal length of box
+listInd   = zeros(numberRegions, 1); % Index (in case of later deletions)
 
 dx = 4; 
 dy = 1; % displacement so the text does not overlay the data points
 
+% Obtain the required number of regions from user input
 for lpUser = 1:numberRegions
     
     [aMask, xi, yi] = roipoly;
@@ -64,8 +68,7 @@ for lpUser = 1:numberRegions
      c = int2str(lpUser);
      text(max(xi)+dx, max(yi)+dy, c, 'color', 'g','fontSize',14);
      plot(xi, yi, 'g')
-    hold off
-    
+    hold off  
 end
 % 3. CALL WALL ANALYSIS AND SAVE FITTED PARAMETERS
 
@@ -79,10 +82,12 @@ for lpBatch = 1:numberRegions
     wall_analysis_v1;
     
     listRad(lpBatch)  = mdlRad;
-    listXCen(lpBatch) = mdlXCen;
-    listYCen(lpBatch) = mdlYCen;
+    listXCen(lpBatch) = mdlXCen + min(listXi(:,lpBatch));
+    listYCen(lpBatch) = mdlYCen + min(listYi(:,lpBatch));
     listVar(lpBatch)  = mdlVar;
     listMax(lpBatch)  = mdlMax;
     listPsi(lpBatch)  = mdlPsi;
+    listDiags(lpBatch)= maxdiag;
+    listInd(lpBatch)  = lpBatch;
   
 end

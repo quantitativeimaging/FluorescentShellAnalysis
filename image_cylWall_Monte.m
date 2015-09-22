@@ -1,6 +1,6 @@
 function I = image_cylWall_Monte(b0, X)
 
-flagShowModelImages = 1;
+flagShowModelImages = 0;
 
 % CYLINDER PARAMETERS
 xcen   = b0(1);

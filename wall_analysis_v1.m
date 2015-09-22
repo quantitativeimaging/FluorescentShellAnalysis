@@ -4,7 +4,7 @@
 %   
 % Eric Rees July 2015. 
 % Bob Turner
-%   1st step: Image semgentation (manual to start with)
+%   1st step: Image segmentation (manual quadrilateral selection)
 %             Make some very arbitrary choices about approximate size
 %   2nd step: Fit model of thin shell to image data
 %             Display output
@@ -31,6 +31,8 @@ fileIn = ['C:\Users\user\Documents\Projects\2014_Spores\2015_BobTurner\' ,...
 flagShowModelImages = 1;
 
 flagGetCalled = 1;  % = 1 means this script is called externally
+                    %   in which case input file name is overwritten
+                    %   and an externally-selected region is analysed
 
 
 % 1. INPUT
