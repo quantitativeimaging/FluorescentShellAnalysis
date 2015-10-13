@@ -19,6 +19,8 @@ flagCaptureListedParams = 1;
 % flagQualControl       = 1; % Apply some quality control step?
 %   cutVar              = 30;
 % modelType             = 1;   % Select image model. I've 1 cylinder model.
+flagLimitReconToBoxes   = 1;
+flagOverlay             = 1;
 
 % Parameters for reconstruction
 fitrad                  = 24;  % 
@@ -32,6 +34,10 @@ imSim      = zeros(size(imDatCp) * scaleFc ); % Empty image reconstr.n
 % Put a simple quality control step here if needed
 
 numberCyls = numberRegions;    % In case quality control voids some regions
+
+if(flagOverlay)
+   imOver = imresize(imDatCp, scaleFc, 'nearest');
+end
 
 % 2. RECONSTRUCTION
 for lpCy = 1:numberCyls
@@ -56,9 +62,24 @@ for lpCy = 1:numberCyls
  % Generate the local meshgrid of pixel co-ordinates in the reconstruction
  [XX,YY] = meshgrid( (sCol*scaleFc-fitrad):(sCol*scaleFc+fitrad),...
                     (sRow*scaleFc-fitrad):(sRow*scaleFc+fitrad) );
+                
  % Hence produce a list of (x,y) co-ordinates:
- listX = XX(:);
- listY = YY(:);
+ if(flagLimitReconToBoxes  == 1)
+   [XXX,YYY] = meshgrid(1:size(imDatCp,2)*scaleFc, 1:size(imDatCp,1)*scaleFc);
+   
+   xip = listXi(:,lpCy)*scaleFc;
+   yip = listYi(:,lpCy)*scaleFc;
+   sz1 = size(imDatCp,2)*scaleFc;
+   sz2 = size(imDatCp,1)*scaleFc;
+   
+   bMask = poly2mask(xip, yip, size(imDatCp,1)*scaleFc, size(imDatCp,2)*scaleFc);
+
+   listX = XXX(bMask);
+   listY = YYY(bMask);
+ else
+   listX = XX(:);
+   listY = YY(:);
+ end
  X = [listX,listY];
  
  % Simulate pixel values from image model
@@ -69,6 +90,13 @@ for lpCy = 1:numberCyls
    imSim(X(lp,2),X(lp,1)) = imSim(X(lp,2),X(lp,1)) + I(lp);
  end
 
+ if(flagOverlay)
+   for lp = 1:length(I)
+   % imOver = imresize(imDatCp, scaleFc, 'nearest');
+   imOver(X(lp,2)-1,X(lp,1)) = I(lp);
+   end
+ end
+ 
 end
     
 % 3. OUTPUT
@@ -82,5 +110,12 @@ axis equal
 
 %    For image-saving convenience:
 if(flagSaveImage)
-     imwrite(imSim'./max(imSim(:)), 'simIm.png')
+     imwrite(imSim./max(imSim(:)), 'simIm.png')
+end
+
+if(flagOverlay)
+   figure(11)
+   imagesc(imOver)
+   colormap(gray)
+   imwrite(imOver./max(imSim(:)), 'simOverlay.png')
 end

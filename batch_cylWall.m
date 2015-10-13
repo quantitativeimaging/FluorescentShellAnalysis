@@ -28,7 +28,7 @@
 % 1. INPUT
 suppliedFileIn = ['testData_Bsubtilis168_HADA_cylinders.tif']; % 
 
-numberRegions = 4; 
+numberRegions = 1; 
 
 
 % 2. ESTABLISH WHICH REGIONS TO PROCESS
@@ -74,10 +74,10 @@ end
 
 for lpBatch = 1:numberRegions
  
-    suppliedMask = listMasks(:,:,lpBatch);
-    
+    % suppliedMask = listMasks(:,:,lpBatch); 
     xi = listXi(:,lpBatch);
     yi = listYi(:,lpBatch);
+    suppliedMask = poly2mask(xi, yi, size(imDatCp,1), size(imDatCp,2));
     
     wall_analysis_v1;
     

@@ -27,10 +27,16 @@
 % 0. SETUP
 % Good data for illustrations:
 % SUBTILIS:
-% fileIn = 'testData_subtilis_ellipsoids.tif'; % SPORE 14 IS A NICE EXAMPLE. Spore 5 for the model data fit plot. 
-
+ fileIn = 'testData_subtilis_ellipsoids.tif'; % SPORE 14 IS A NICE EXAMPLE for model-data plot. Or try Spore 5 for the model data fit plot. 
+% fileIn = 'testData_20subtilis_ellipsoids.tif';
+% fileIn = 'testData_subt_SleL_GFP_200.tif'; % Try spore 5 for Fig. 3 plot
+% fileIn = ['C:\Users\user\Documents\Projects\2014_Spores\2015_March\GFP Images for Eric\Inner Coat\SleL\' ,...
+%       'SleL QMB green 1.tif']; % ELLIPSE FITTING: SPORE 2
+% fileIn = ['C:\Users\user\Documents\Projects\2014_Spores\2015_April_Subtilis GFP spores\Subtilis GFP spores\' ,...
+%           'CotG GFP 150 2.tif'];  
+ 
 % SIMULATED OBJECTS:
-  fileIn = 'testData_9testSTORMspheres_500nmRad_pixel74nm_PSF145nm.tif'; % TestSTORM data
+%  fileIn = 'testData_9testSTORMspheres_500nmRad_pixel74nm_PSF145nm.tif'; % TestSTORM data
 
 % MEGATERIUM:
 % fileIn = 'testData_megaterium_spheres.tif'; % Spherical megaterium super-resolution       
@@ -43,7 +49,7 @@ flagModelType = 5;     % 1: Algebraic thin spherical shell
                        % 4: Monte Carlo uniformly bright prolate ellipsoid
                        % 5: Monte Carlo ellipsoid, variable equatorial bias
 
-flagOneImageOnly    = 1; % 0: all images. 
+flagOneImageOnly    = 0; % 0: all images. 
                          % 1: One image. 
                          % 2: first N images
                          
@@ -51,14 +57,14 @@ flagGetCalledByBatch = 0; % Changes the way this script handles in/out-put
                           % Allows batch script to overwrite the inputs
                           % Causes data to be saved to outFolder, /out
                          
-singleImageNumber   = 1; % Index of which single candidate image to fit
+singleImageNumber   = 5; % Index of which single candidate image to fit
 flagFirstNimages    = 20; % Or process this many candidates
 
 flagUseTestcardImages = 0; % Use a testcard image of 1 ellipsoid as input
 flagSetSegmentManually= 1; % Manually define where to fit model 
 
 flag_WeightBins     = 0;  % Weight pixel data by (1/r) for fitting
-flagAntiCollision   = 0;  % Reduce paired candidates to singlets
+flagAntiCollision   = 1;  % Reduce paired candidates to singlets
 collisionRadius     = 12; % Anti-collision radius (pixels)
 
 flagShowImages      = 1; % Show image data (in grey)
@@ -158,7 +164,7 @@ end
 if(flagShowCandidates)
 % Plot the camera image with field of candidate spores circled:
 figure(1)
-  imagesc(imDat);
+  imagesc(double(imDat)./max(double(imDat(:))) );
   colormap(gray)
   truesize; % This is a screensize-dependent bodge for the scatterplot
   hold on
@@ -170,7 +176,7 @@ figure(1)
      c = cellstr(b);
      dx = 5; 
      dy = -1; % displacement so the text does not overlay the data points
-     text(centers(:,1)+dx, centers(:,2)+dy, c, 'color', 'g', 'fontSize', 14);
+     text(centers(:,1)+dx, centers(:,2)+dy, c, 'color', 'g', 'fontSize', 10);
   end
   if(flagShowHoffRadHist)
   figure(2)
@@ -370,7 +376,9 @@ for lpSpore = startIndex:finishIndex;
         % myC, in Col-direction, is new x-coordinate after rotation
         myC  = mdlXCen(1,1) + myXp.*cos(mdlPsi) + myYp.*sin(mdlPsi);
         myR  = mdlYCen(1,1) - myXp.*sin(mdlPsi) + myYp.*cos(mdlPsi);
-        plot(myC,myR, 'r','lineWidth', 2);
+        plot(myC,myR, 'r--','lineWidth', 2);
+        axis equal % To prepare figures for publication.
+        % xlim([7 34]); ylim([7 34]); % Also for publication.
       end
      hold off
      end  
@@ -421,7 +429,7 @@ if(flagShowFitOutlines)
      for lpP = 1:length(listFittedRad)
        myR = listFittedRow(lpP) + mdlRad*cos(myPhi); % SPHERICAL EXACT MODEL
        myC = listFittedCol(lpP) + mdlRad*sin(myPhi);
-       plot(myC,myR, 'r','lineWidth', 2);
+       plot(myC,myR, 'r--','lineWidth', 2);
      end
      hold off
      axis equal
@@ -440,7 +448,7 @@ if(flagShowFitOutlines)
        mdlPsi = listFittedPsi(lpP);
        myC  = listFittedCol(lpP) + myXp.*cos(mdlPsi) + myYp.*sin(mdlPsi);
        myR  = listFittedRow(lpP) - myXp.*sin(mdlPsi) + myYp.*cos(mdlPsi);
-       plot(myC,myR, 'r','lineWidth', 2);
+       plot(myC,myR, 'r--','lineWidth', 2);
        axis equal
     end
     hold off
