@@ -1,5 +1,5 @@
-function I = image_sphere_thin(x_centre, y_centre, radius, psf_sigma, height, X)
-% IMAGE_SPHERE_THIN - Return radial intensities of image of a thin spherical shell
+function I = cross_section_sphere_thin(x_centre, y_centre, radius, psf_sigma, height, X)
+% CROSS_SECTION_SPHERE_THIN - Return radial intensities of image of a thin spherical shell
 %
 % Input:
 % 	x_centre  - x coordinate of shell centre.

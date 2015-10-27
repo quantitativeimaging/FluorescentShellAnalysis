@@ -1,5 +1,5 @@
 function I = image_sphere_thick(x_centre, y_centre, radius, psf_sigma, height, thickness, X)
-% IMAGE_SPHERE_THICK - Return radial intensities of image of a thick spherical shell
+% CROSS_SECTION_SPHERE_THICK - Return radial intensities of image of a thick spherical shell
 %
 % Input:
 % 	x_centre  - x coordinate of shell centre.
