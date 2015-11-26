@@ -27,7 +27,7 @@
 % 0. SETUP
 % Good data for illustrations:
 % SUBTILIS:
- fileIn = 'testData_subtilis_ellipsoids.tif'; % SPORE 14 IS A NICE EXAMPLE for model-data plot. Or try Spore 5 for the model data fit plot. 
+% fileIn = 'testData_subtilis_ellipsoids.tif'; % SPORE 14 IS A NICE EXAMPLE for model-data plot. Or try Spore 5 for the model data fit plot. 
 % fileIn = 'testData_20subtilis_ellipsoids.tif';
 % fileIn = 'testData_subt_SleL_GFP_200.tif'; % Try spore 5 for Fig. 3 plot
 % fileIn = ['C:\Users\user\Documents\Projects\2014_Spores\2015_March\GFP Images for Eric\Inner Coat\SleL\' ,...
@@ -39,17 +39,19 @@
 %  fileIn = 'testData_9testSTORMspheres_500nmRad_pixel74nm_PSF145nm.tif'; % TestSTORM data
 
 % MEGATERIUM:
-% fileIn = 'testData_megaterium_spheres.tif'; % Spherical megaterium super-resolution       
-  
+ fileIn = 'testData_megaterium_spheres.tif'; % Spherical megaterium super-resolution       
+ 
 
+%fileIn = ['C:\Users\user\Documents\Projects\2015_IIB_Spores\Data\19_11_15\',...
+%         'SleL_GFP_2f.tif'];
 
-flagModelType = 5;     % 1: Algebraic thin spherical shell 
+flagModelType = 1;     % 1: Algebraic thin spherical shell 
                        % 2: Monte Carlo thin spherical shell 
                        % 3: Monte Carlo strained spherical shell
                        % 4: Monte Carlo uniformly bright prolate ellipsoid
                        % 5: Monte Carlo ellipsoid, variable equatorial bias
 
-flagOneImageOnly    = 0; % 0: all images. 
+flagOneImageOnly    = 1; % 0: all images. 
                          % 1: One image. 
                          % 2: first N images
                          
@@ -57,7 +59,7 @@ flagGetCalledByBatch = 0; % Changes the way this script handles in/out-put
                           % Allows batch script to overwrite the inputs
                           % Causes data to be saved to outFolder, /out
                          
-singleImageNumber   = 5; % Index of which single candidate image to fit
+singleImageNumber   = 8; % Index of which single candidate image to fit
 flagFirstNimages    = 20; % Or process this many candidates
 
 flagUseTestcardImages = 0; % Use a testcard image of 1 ellipsoid as input
@@ -117,6 +119,8 @@ end
 
 imDat   = imread(fileIn);
 imDatCp  = mean(imDat,3); % Make a grey copy for analysis
+szImDatCp = size(imDatCp);
+
 
 if(flagMedianBGsub)
  % imDatCp = 2^16 - 1 - imDatCp;
@@ -168,7 +172,7 @@ figure(1)
   colormap(gray)
   truesize; % This is a screensize-dependent bodge for the scatterplot
   hold on
-   scatter(centers(:,1),centers(:,2), pi*radii.^2/(9/4),'co','lineWidth',2)
+   scatter(centers(:,1),centers(:,2), pi*radii.^2/(9/4),'cx','lineWidth',2)
   hold off
   if(flagShowTextLabels)
      a = [1:length(radii)]';
@@ -486,7 +490,8 @@ if(flagGetCalledByBatch)
            'listFittedEqu', 'listFittedMax', ...
            'listFittedInd', 'listFittedPsi', ...
            'estMeanRad', 'estStdRad',...
-           'estVar', 'relSumSq' );
+           'estVar', 'relSumSq', ...
+           'szImDatCp', 'imDatCp' );
 end
 
 % THE SHADOW REMAINS CALM!
