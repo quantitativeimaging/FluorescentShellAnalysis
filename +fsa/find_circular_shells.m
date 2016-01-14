@@ -11,6 +11,29 @@ A(A(:, 2) < segment_half_size + edge_border + 1, :) = [];
 A(A(:, 2) > size(image_data, 1) - (segment_half_size + edge_border) - 1, :) = [];
 
 
+% Anti-collision filtering
+centres = A(:, 1:2);
+[index, distance] = rangesearch(centres, centres, 2 * segment_half_size);
+
+[dummy, Index] = sort(cellfun('size', index, 2), 'descend');
+old_index = index;
+index = index(Index);
+
+% indices_remove = [];
+% for (i=1:length(index))
+% 	curr_indices = setdiff(index{i}, i);
+% 	curr_indices = find(old_index == curr_indices);
+% 	for(j=1:length(curr_indices))
+% 		index{curr_indices(j)} = index{curr_indices(j)}(index{curr_indices(j)} ~= i);
+% 	end
+% 	indices_remove = [indices_remove, curr_indices];
+% end
+% A(indices_remove, :) = [];
+
+centres = A(:, 1:2);
+radii   = A(:, 3);
+metric  = A(:, 4);
+
 if (ShowPlot)
 	figure
 	imshow(image_data, []);
