@@ -8,11 +8,11 @@
 % that the analysis correctly captures the shell parameters
 %
 
-flagSaveImage           = 0;
+flagSaveImage           = 1;
 flagCaptureListedParams = 1;
 
-flagQualControl = 1;
-  cutVar = 30;
+flagQualControl = 1;        % Remove objects with PSF var >> plausible val.
+  cutVar = 25;
   
 modelType = 1; 
 
@@ -22,10 +22,11 @@ nPoints = 10000;
 
 scaleFactor = 2;
 
-imSim = zeros(fliplr(size(imDatCp)) * scaleFactor );
+imSim = zeros(fliplr(szImDatCp) * scaleFactor );
 
+% Quality control step 1: remove images outside the recon
 
-% Quality control: filter out Var >> expected
+% Quality control: filter out objects with Var >> plausible value
 if(flagQualControl)
   listFittedInd = listFittedInd(listFittedVar < cutVar);
   listFittedCol = listFittedCol(listFittedVar < cutVar);
@@ -64,14 +65,21 @@ for lpSpore = 1:length(listFittedInd)
   listY = YY(:);
   X = [listX,listY];
   
+  % Simulate the image of a shell:
   if(modelType == 1)
     I = image_DRees(params2, X);
   elseif(modelType == 5)
     I = image_biasEl_Monte([params2, nPoints], X);
   end
 
-  for lp = 1:length(I)
+  % Add this shell to the reconstruction, but only if within the area
+  if(listFittedRow(lpSpore) > fitrad && ...
+     listFittedCol(lpSpore) > fitrad && ...
+     listFittedRow(lpSpore) <(szImDatCp(1)-fitrad) && ...
+     listFittedCol(lpSpore) <(szImDatCp(2)-fitrad) )
+   for lp = 1:length(I)
     imSim(X(lp,1),X(lp,2)) = imSim(X(lp,1),X(lp,2)) + I(lp);
+   end
   end
  
 end
@@ -84,5 +92,6 @@ axis equal
  
 %
 if(flagSaveImage)
-     imwrite(imSim'./max(imSim(:)), 'simIm.png')
+     imwrite(imSim'./max(imSim(:)), ...
+       'C:\Users\user\Documents\Projects\2014_Spores\MATLAB\out\simIm.png')
 end

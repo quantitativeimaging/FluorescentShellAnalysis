@@ -15,12 +15,16 @@
 %    Which folder to write frames of video output?
 %    Max jump distance to acceptable nearest neighbours
 
-inDir   = 'C:\Users\user\Documents\Projects\2015_IIB_Spores\Data\19_11_15_results\mats\';
-file1   = '\SleL_GFP_2a.mat';
+inDir   = 'C:\Users\user\Documents\Projects\2015_IIB_Spores\3FebResuts\';
+file1   = 'BMeg_CotX_GFP_FL_00.mat';
 
 outDir = 'C:\Users\user\Documents\Projects\2015_IIB_Spores\Data\19_11_15_results\vid\';
 
-jumpRadSq = 4^2; % Max unambiguous jump distance. 
+flagVidRecon =1;
+
+jumpRadius   = 10; % How far spores may drift between successive frames.
+
+jumpRadSq = jumpRadius^2; % Max unambiguous jump distance. 
 
 listOfFiles   = dir([inDir,'*.mat']); % Get all .mat files
 numberOfFiles = length(listOfFiles);
@@ -72,7 +76,7 @@ listIndOld = listFittedInd;
  
  
 %% Show tags on recon^s. Only number spores found in all frames
-flagVidRecon =1;
+% flagVidRecon =1;
 figure(1)
 for lpFile = 1:numberOfFiles
    load([inDir,listOfFiles(lpFile).name]);
@@ -102,8 +106,10 @@ for lpFile = 1:numberOfFiles
    
    if(1)% select here whether to write some output
        set(1,'Position',[100,100,800,600]); % 800 px wide, 600 high
-       xlim([1001 1800]); % Choose area of interest
-       ylim([[1 600]]);
+       axis equal
+       xlim([1051 1700]); % Choose area of interest
+       ylim([[1700 2300]]);
+       % 
        F   = getframe(1);
        imF = F.cdata;
        imwrite(imF, [outDir, 'vid', int2str(lpFile), '.png'])
