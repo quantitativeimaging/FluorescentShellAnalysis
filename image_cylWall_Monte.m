@@ -37,7 +37,7 @@ surfY = -surfXp.*sin(psi) + surfYp.*cos(psi) + ycen;
 I = zeros(size(X,1), 1); % Bod
 
 for lp = 1:nPoints
-    if(1)
+    if(0)
       twoSS = 2*abs(var)*(1+(surfZ(lp)/4).^2);
     end
     dispsSq = ( (surfX(lp) - X(:,1) ).^2 + ...

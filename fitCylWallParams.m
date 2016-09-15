@@ -141,6 +141,7 @@ for lpIts = 1:numberIts
      hold off
      xlabel('cross section')
      ylabel('pixel value')
+     drawnow;
      
      figure(8)
      scatter(angle, t)
@@ -210,9 +211,12 @@ for lpIts = (numberIts+1): (2*numberIts)
      xlabel('Cross section, px', 'fontSize', 16)
      ylabel('Pixel value', 'fontSize', 16)
      legend('Image data','Model fit')
+     drawnow;
     end
 end
 
+assignin('base', 'ySec', ySec);
+assignin('base', 'Ifitted', I);
 
 beta = b0;
 
